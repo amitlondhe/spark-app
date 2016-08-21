@@ -63,13 +63,13 @@
 				mapDataForRestaurants.addColumn('number', 'AvgStarRating');
 				mapDataForRestaurants.addRows(dataForRestaurants);
 				
-				var options = {
+				var options = {	
 					region: 'US',	
 					displayMode:'auto',
 					resolution:'provinces',
 					title:'Cuisine Popularity by State',
 					backgroundColor:'lightblue',
-					width:'700',
+					width:'800',
 					height:'450',
 					animation:{
 						"startup": "true"
@@ -205,13 +205,13 @@
             <div class="header-content-inner">
                 <h1 id="homeHeading">Discover best place for your next restaurant</h1>
                 <hr>
-                <p>I can help you figure out best possible location for your next restaurant based on the Yelp data blended with Census.</p>
-                <a href="#about" class="btn btn-primary btn-xl page-scroll">Let's start</a>
+                <p style="color:white">I can help you figure out best possible location for your next restaurant based on the Yelp data blended with Census.</p>
+                <a href="#selectcuisine" class="btn btn-primary btn-xl page-scroll">Let's start</a>
             </div>
         </div>
     </header>
 
-    <section class="bg-primary" id="about">
+    <section class="bg-primary" id="selectcuisine">
         <div class="container">
 			<div class="row">
 				<h2> Start by selecting type of cuisine you are interested to know more about </h2>
@@ -229,10 +229,10 @@
         </div>
     </section>
 
-    <section id="services">
+    <section id="services" class="bg-light">
         <div class="container">
             <div class="row">
-				<div class="col-sm-12">
+				<div class="col-lg-12">
 					<div id="regions_div"/>
 			    </div>
             </div>			
@@ -241,9 +241,9 @@
             <div class="row">
                 <div class="col-lg-12 text-center" id="infoMap" style="display:none">
 					<hr class="primary">
-                    <h3 class="section-heading">Darker the shade, more popular the cuisine in that state </h3>
+                    <h3 class="section-heading" style="color:darkblue">Darker the shade, more popular the cuisine in that state </h3>
                     <hr class="primary">
-					<a href="#about" class="page-scroll btn btn-default btn-x4 sr-button" style="background-color:#F05F40;">Let's check another cuisine</a>	
+					<a href="#selectcuisine" class="page-scroll btn btn-default btn-x4 sr-button" style="background-color:#F05F40;">Let's check another cuisine</a>	
 					<a href="#cuisinestatecensus" class="page-scroll btn btn-default btn-x4 sr-button" id="movetosankey" style="display:none">Move</a>
                 </div>
             </div>
@@ -264,11 +264,10 @@
 					<hr class="primary">
                     <h3 id="headingSankey" class="section-heading" style="color:darkblue">Cuisine Type to Census To Demographic Distribution</h3>
                     <hr class="primary">
-					<a href="#about" class="page-scroll btn btn-default btn-x4 sr-button" style="background-color:#F05F40;">Let's check another cuisine</a>	
+					<a href="#selectcuisine" class="page-scroll btn btn-default btn-x4 sr-button" style="background-color:#F05F40;">Let's check another cuisine</a>	
                 </div>
             </div>
-        </div>			
-		
+        </div>
     </section>	
 
     <section id="contact">
