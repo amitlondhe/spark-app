@@ -11,8 +11,8 @@ var dataForChinese = [
 
 var dataForRestaurants = [
 ['US-NC',3.41],
-['US-TX', 4.0],
-['US-NM', 3.0],
+['US-TX',4.0],
+['US-NM',3.0],
 ['US-NV',3.41],
 ['US-AZ',3.42],
 ['US-IL',3.35],
@@ -35,7 +35,7 @@ var usaz = [["fast food", "US-AZ", 2.92],["restaurants", "US-AZ", 3.42],["chines
 
 var usil = [["fast food","US-IL", 2.68],["restaurants","US-IL", 3.35],["chinese","US-IL", 3.41], ["US-IL", "percentasian", 4.57], ["US-IL", "percentblack", 14.55], ["US-IL", "percentwhite", 71.53]]
 
-var usnc = [["fast food","US-NC", 3.04],["restaurants","US-NC", , 3.41],[ "chinese","US-NC", 3.22], ["US-NC", "percentasian", 2.19], ["US-NC", "percentblack", 21.48], ["US-NC", "percentwhite", 68.47]]
+var usnc = [["fast food","US-NC", 3.04],["restaurants","US-NC",3.41],[ "chinese","US-NC", 3.22], ["US-NC", "percentasian", 2.19], ["US-NC", "percentblack", 21.48], ["US-NC", "percentwhite", 68.47]]
 
 var usnm = [["restaurants","US-NM", 3.0], ["US-NM", "percentasian", 1.37], ["US-NM", "percentblack", 2.07], ["US-NM", "percentwhite", 68.37]]
 

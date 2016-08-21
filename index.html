@@ -58,10 +58,10 @@
 				mapDataForFastFood.addColumn('number', 'AvgStarRating');
 				mapDataForFastFood.addRows(dataForFastFood);
 				
-				var mapDataForRestaurant = new google.visualization.DataTable();
-				mapDataForRestaurant.addColumn('string', 'State');
-				mapDataForRestaurant.addColumn('number', 'AvgStarRating');
-				mapDataForRestaurant.addRows(dataForRestaurants);
+				var mapDataForRestaurants = new google.visualization.DataTable();
+				mapDataForRestaurants.addColumn('string', 'State');
+				mapDataForRestaurants.addColumn('number', 'AvgStarRating');
+				mapDataForRestaurants.addRows(dataForRestaurants);
 				
 				var options = {
 					region: 'US',	
@@ -75,6 +75,7 @@
 						"startup": "true"
 					}
 				};
+				
 				var chart = new google.visualization.GeoChart(document.getElementById('regions_div'));
 				google.visualization.events.addListener(chart, 'regionClick', handleRegionSelection);
 				chart.draw(eval(cuisineSelected), options);
