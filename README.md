@@ -49,7 +49,7 @@ You can use this app to figure out which location may be the best to open a cert
 	val fastfoodRestAvgStarsPerState = fastfoodRests.groupBy($"state").avg("stars").select($"state",round($"avg(stars)",2).alias("avg_star"))
 	val chineseRests = busWithCategory.filter(upper($"category").equalTo("chinese".toUpperCase())).drop("categories")
 	val chineseRestsAvgStarsPerState = chineseRests.groupBy($"state").avg("stars").select($"state",round($"avg(stars)",2).alias("avg_star"))
-	<pre><code>
+	</code></pre>
 * Fetching Census Data as a Spark RDD
 * US 2010 Census data is used to add the Demographic dimension to the data analysis. 
 * I have created a JSON file that contained mappings between US States and their FIPS codes. The census data needs to be retrieved using the IDs assigned to each state.
