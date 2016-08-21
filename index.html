@@ -29,12 +29,13 @@
 	<script src="https://code.jquery.com/jquery-1.10.2.js"></script>
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+	<script type="text/javascript" src="js/sankey-data.js"></script>
 	
 	<script type="text/javascript">
 
 	  $(document).ready(function() {
 
-	   google.charts.load('current', {'packages':['geochart','corechart']});
+	   google.charts.load('current', {'packages':['geochart','corechart','sankey']});
 
 		var cuisineSelected;
 
@@ -42,52 +43,31 @@
 			cuisineSelected = $( "input:checked" ).val();
 			$("#regions_div").empty();			
 			google.charts.setOnLoadCallback(drawRegionsMap);
-			$("#getstarted").click();			
+			$("#getstarted").click();
+			$("#infoMap").show();			
 		});
-
+		
 		  function drawRegionsMap() {
-
-				var dataForChinese = google.visualization.arrayToDataTable([
-				['State', 'Stars'],
-				['US-NC', 3.22],
-				['US-NV', 3.29],
-				['US-AZ', 3.32],
-				['US-IL', 3.41],
-				['US-PA', 3.28],
-				['US-WI', 3.34],
-				['US-SC', 3.73]
-				]);
-
-				var dataForRestaurants = google.visualization.arrayToDataTable([
-				['State', 'Stars'],
-				['US-NC',3.41],
-				['US-TX', 4.0],
-				['US-NM', 3.0],
-				['US-NV',3.41],
-				['US-AZ',3.42],
-				['US-IL',3.35],
-				['US-PA',3.56],
-				['US-WI',3.45],
-				['US-SC',3.34]
-				]);
-
-				var dataForFastFood = google.visualization.arrayToDataTable([
-				['State', 'Stars'],
-				['US- NC', 3.04],
-				['US- NV', 2.89],
-				['US- AZ', 2.92],
-				['US- IL', 2.68],
-				['US- PA', 2.89],
-				['US- WI', 3.02],
-				['US- SC', 2.94]
-				]);
-
+				var mapDataForChinese = new google.visualization.DataTable();
+				mapDataForChinese.addColumn('string', 'State');
+				mapDataForChinese.addColumn('number', 'AvgStarRating');
+				mapDataForChinese.addRows(dataForChinese);
+				
+				var mapDataForFastFood = new google.visualization.DataTable();
+				mapDataForFastFood.addColumn('string', 'State');
+				mapDataForFastFood.addColumn('number', 'AvgStarRating');
+				mapDataForFastFood.addRows(dataForFastFood);
+				
+				var mapDataForRestaurant = new google.visualization.DataTable();
+				mapDataForRestaurant.addColumn('string', 'State');
+				mapDataForRestaurant.addColumn('number', 'AvgStarRating');
+				mapDataForRestaurant.addRows(dataForRestaurants);
+				
 				var options = {
 					region: 'US',	
 					displayMode:'auto',
 					resolution:'provinces',
 					title:'Cuisine Popularity by State',
-					
 					backgroundColor:'lightblue',
 					width:'700',
 					height:'450',
@@ -100,10 +80,46 @@
 				chart.draw(eval(cuisineSelected), options);
 		  }
 		  
-		  function handleRegionSelection(region) {
-			alert("You selected - " + region.region);			
-			drawSeriesChart();
+		  function handleRegionSelection(region) {			
+			$("#series_chart_div").empty();		
+			$("#movetosankey").click();
+			$("#infoSankey").show();
+			drawSankeyChart(region.region);
 		  }
+		  
+		  function drawSankeyChart(region) {
+		  var colors = ['#a6cee3', '#b2df8a', '#fb9a99', '#fdbf6f',
+                  '#cab2d6', '#ffff99', '#1f78b4', '#33a02c'];
+		   region = region.replace("-","").toLowerCase();
+		   var datarows = eval(region)
+		   var data = new google.visualization.DataTable();
+			data.addColumn('string', 'From');
+			data.addColumn('string', 'To');
+			data.addColumn('number', 'Weight');
+			data.addRows(datarows);
+		  	  // Instantiates and draws our chart, passing in some options.
+			   // Sets chart options.
+			var options = {
+			  width: 700,
+			  sankey: {
+				node: {
+				  colors: colors,
+				  label: { fontName: 'Times-Roman',
+                         fontSize: 14,
+                         color: '#871b47',
+                         bold: true,
+                         italic: true },
+				  nodePadding: 80						 
+				},
+				link: {
+				  colorMode: 'gradient',
+				  colors: colors
+				}
+			  }
+			};
+			var chart = new google.visualization.Sankey(document.getElementById('series_chart_div'));
+			chart.draw(data, options);	
+		}
 		  
 		  
 		  function drawSeriesChart() {		      
@@ -202,9 +218,9 @@
 			</div>		
             <div class="row">
                 <div class="col-lg-12" >
-					<label class="radio-inline" style="font-size:large;"><input type="radio" name="cuisine" value="dataForFastFood">Fast Food</label>
-					<label class="radio-inline" style="font-size:large;"><input type="radio" name="cuisine" value="dataForRestaurants">Restaurants</label>
-					<label class="radio-inline" style="font-size:large;"><input type="radio" name="cuisine" value="dataForChinese">Chinese</label>	
+					<label class="radio-inline" style="font-size:large;"><input type="radio" name="cuisine" value="mapDataForFastFood">Fast Food</label>
+					<label class="radio-inline" style="font-size:large;"><input type="radio" name="cuisine" value="mapDataForRestaurants">Restaurants</label>
+					<label class="radio-inline" style="font-size:large;"><input type="radio" name="cuisine" value="mapDataForChinese">Chinese</label>	
 					<hr>
 					<a href="#services" class="page-scroll btn btn-default btn-x4 sr-button" id="getstarted" style="display:none">Get Started!</a>
                 </div>
@@ -218,21 +234,22 @@
 				<div class="col-sm-12">
 					<div id="regions_div"/>
 			    </div>
-            </div>
+            </div>			
 		</div>
         <div class="container">
             <div class="row">
-                <div class="col-lg-12 text-center">
+                <div class="col-lg-12 text-center" id="infoMap" style="display:none">
 					<hr class="primary">
                     <h3 class="section-heading">Darker the shade, more popular the cuisine in that state </h3>
                     <hr class="primary">
 					<a href="#about" class="page-scroll btn btn-default btn-x4 sr-button" style="background-color:#F05F40;">Let's check another cuisine</a>	
+					<a href="#cuisinestatecensus" class="page-scroll btn btn-default btn-x4 sr-button" id="movetosankey" style="display:none">Move</a>
                 </div>
             </div>
         </div>		
     </section>
 		
-    <section id="cuisine-state-census" class="bg-dark">
+    <section id="cuisinestatecensus" class="bg-light">
         <div class="container">
             <div class="row">
 				<div class="col-sm-12">			
@@ -240,8 +257,18 @@
 				</div>
 		    </div>
         </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 text-center" id="infoSankey" style="display:none">
+					<hr class="primary">
+                    <h3 id="headingSankey" class="section-heading" style="color:darkblue">Cuisine Type to Census To Demographic Distribution</h3>
+                    <hr class="primary">
+					<a href="#about" class="page-scroll btn btn-default btn-x4 sr-button" style="background-color:#F05F40;">Let's check another cuisine</a>	
+                </div>
+            </div>
+        </div>			
+		
     </section>	
-
 
     <section id="contact">
         <div class="container">
@@ -264,7 +291,7 @@
     </section>
 
     <!-- jQuery -->
-    <script src="vendor/jquery/jquery.min.js"></script>
+    <!--<script src="vendor/jquery/jquery.min.js"></script> -->
 
     <!-- Bootstrap Core JavaScript -->
     <script src="vendor/bootstrap/js/bootstrap.min.js"></script>
