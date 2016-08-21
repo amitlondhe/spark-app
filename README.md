@@ -12,12 +12,6 @@ You can use this app to figure out which location may be the best to open a cert
 * The demographic data has been obtained using Spark script accessing <b> U.S Census API. </b>
 
 
-## Constraints
-
-* Yelp dataset does not include the statistics for all the states.
-* The average rating spans from 1-5 and the Percentage of various races of people span from 0-100. Hence the Sankey diagram shows wider connection between State and Demographic divide than average rating for cuisines in the particular state.
-* You can only choose from three cuisines at the moment and those are selected based on the number of reviews available for them in Yelp Dataset.
-
 ## Data Analysis
 
 * All the data analysis has been done using <b> Scala on Apache Spark running on Windows desktop </b>.
@@ -109,3 +103,11 @@ preferred in that area.
 		  })
 		  censusWithCuisineSankeyData.coalesce(1).saveAsTextFile("C:/amit/yelp/data/percentperstate")
 		</code></pre>
+
+## Constraints
+
+* Yelp dataset does not include the statistics for all the states.
+* The average rating spans from 1-5 and the Percentage of various races of people span from 0-100. Hence the Sankey diagram shows wider connection between State and Demographic divide than average rating for cuisines in the particular state.
+* You can only choose from three cuisines at the moment and those are selected based on the number of reviews available for them in Yelp Dataset.		
+		
+## Challenges
