@@ -38,6 +38,7 @@
 	   google.charts.load('current', {'packages':['geochart','corechart','sankey']});
 
 		var cuisineSelected;
+		var lastRegionSelected = "";
 
 		$( "input" ).on( "click", function() {
 			cuisineSelected = $( "input:checked" ).val();
@@ -46,6 +47,31 @@
 			$("#getstarted").click();
 			$("#infoMap").show();			
 		});
+		
+		$("#biggerPicture").on("click",function() {
+			$("#series_chart_div").empty();
+			$("#headingSankey").html("Cuisine Types in all States with their Demographic Distribution").show();
+			$("#movetosankey").click();
+			$("#infoSankey").show();
+			drawSankeyChart("all");
+		});
+		
+		$("#backtoonestate").on("click",function() {
+			$("#series_chart_div").empty();
+			$("#headingSankey").html("Cuisine Types in all States with their Demographic Distribution").show();
+			$("#movetosankey").click();
+			$("#infoSankey").show();
+			drawSankeyChart(lastRegionSelected);
+		});
+		
+		function handleRegionSelection(region) {
+		    lastRegionSelected = region.region;
+			$("#series_chart_div").empty();		
+			$("#movetosankey").click();
+			$("#infoSankey").show();
+			$("#headingSankey").html("Cuisine Types in " + region.region + " with its Demographic Distribution").show();
+			drawSankeyChart(region.region);
+		  }
 		
 		  function drawRegionsMap() {
 				var mapDataForChinese = new google.visualization.DataTable();
@@ -81,37 +107,51 @@
 				chart.draw(eval(cuisineSelected), options);
 		  }
 		  
-		  function handleRegionSelection(region) {			
-			$("#series_chart_div").empty();		
-			$("#movetosankey").click();
-			$("#infoSankey").show();
-			drawSankeyChart(region.region);
-		  }
+
 		  
 		  function drawSankeyChart(region) {
-		  var colors = ['#a6cee3', '#b2df8a', '#fb9a99', '#fdbf6f',
+			var colors = ['#a6cee3', '#b2df8a', '#fb9a99', '#fdbf6f',
                   '#cab2d6', '#ffff99', '#1f78b4', '#33a02c'];
-		   region = region.replace("-","").toLowerCase();
-		   var datarows = eval(region)
-		   var data = new google.visualization.DataTable();
+			var datarows = [];
+			var data = new google.visualization.DataTable();
 			data.addColumn('string', 'From');
 			data.addColumn('string', 'To');
 			data.addColumn('number', 'Weight');
 			data.addColumn({type: 'string', role: 'tooltip'});
+			// Defaults are set for a region.
+			sankeynodepadding = 80;
+			sankeyheight = "";
+			sankeywidth= 700;
+			sankeyfontsize = 14;
+		   if(region == 'all') {
+				//alert("all");
+				datarows = usaz.concat(usil).concat(usnc).concat(usnm).concat(usnv).concat(uspa).concat(ussc).concat(ustx).concat(uswi)
+				//datarows = usaz.concat(usil).concat(usnc).concat(usnm).concat(usnv);
+				sankeynodepadding = "";
+				sankeyheight = 400;
+				sankeywidth = "";
+				sankeyfontsize = 10;
+		   } else {
+				region = region.replace("-","").toLowerCase();
+				datarows = eval(region);
+				sankeyheight = ""
+		   }
+		   
 			data.addRows(datarows);
 		  	  // Instantiates and draws our chart, passing in some options.
 			   // Sets chart options.
 			var options = {
-			  width: 700,
+			  width: sankeywidth, // 700 for one region
+			  height:sankeyheight, // 600 for all regions	
 			  sankey: {
 				node: {
 				  colors: colors,
 				  label: { fontName: 'Times-Roman',
-                         fontSize: 14,
+                         fontSize: sankeyfontsize,
                          color: '#871b47',
                          bold: true,
                          italic: true },
-				  nodePadding: 80						 
+				  nodePadding: sankeynodepadding						 
 				},
 				link: {
 				  colorMode: 'gradient',
@@ -124,32 +164,7 @@
 		}
 		  
 		  
-		  function drawSeriesChart() {		      
-			  var data = google.visualization.arrayToDataTable([
-				['ID', 'Life Expectancy', 'Fertility Rate', 'Region',     'Population'],
-				['CAN',    80.66,              1.67,      'North America',  33739900],
-				['DEU',    79.84,              1.36,      'Europe',         81902307],
-				['DNK',    78.6,               1.84,      'Europe',         5523095],
-				['EGY',    72.73,              2.78,      'Middle East',    79716203],
-				['GBR',    80.05,              2,         'Europe',         61801570],
-				['IRN',    72.49,              1.7,       'Middle East',    73137148],
-				['IRQ',    68.09,              4.77,      'Middle East',    31090763],
-				['ISR',    81.55,              2.96,      'Middle East',    7485600],
-				['RUS',    68.6,               1.54,      'Europe',         141850000],
-				['USA',    78.09,              2.05,      'North America',  307007000]
-			  ]);
-
-			  var options = {
-				title: 'Correlation between life expectancy, fertility rate ' +
-					   'and population of some world countries (2010)',
-				hAxis: {title: 'Life Expectancy'},
-				vAxis: {title: 'Fertility Rate'},
-				bubble: {textStyle: {fontSize: 11}}
-			  };
-
-			  var chart = new google.visualization.BubbleChart(document.getElementById('series_chart_div'));
-			  chart.draw(data, options);
-		}
+		  
 
 	  });
 
@@ -251,7 +266,7 @@
         </div>		
     </section>
 		
-    <section id="cuisinestatecensus" class="bg-light">
+    <section id="cuisinestatecensus" class="bg-light-alternate ">
         <div class="container">
             <div class="row">
 				<div class="col-sm-12">			
@@ -263,10 +278,12 @@
             <div class="row">
                 <div class="col-lg-12 text-center" id="infoSankey" style="display:none">
 					<hr class="primary">
-                    <h3 id="headingSankey" class="section-heading" style="color:darkblue"> Cuisine Types in a State with their Demographic Distribution</h3>
+                    <h3 id="headingSankey" class="section-heading" style="color:darkblue">Cuisine Types in a State with their Demographic Distribution</h3>
                     <hr class="primary">
-					<a href="#selectcuisine" class="page-scroll btn btn-default btn-x4 sr-button" style="background-color:#F05F40;">Let's check another cuisine</a>	
-                </div>
+					<a href="#selectcuisine" class="page-scroll btn btn-default btn-x4 sr-button" style="background-color:#F05F40;">Let's check another cuisine</a>
+					<a href="#cuisinestatecensus" id="biggerPicture" class="btn btn-default btn-x4 sr-button" style="background-color:#F05F40;">Bigger Picture</a>					
+                    <a href="#cuisinestatecensus" id="backtoonestate" class="btn btn-default btn-x4 sr-button" style="background-color:#F05F40;">Back to state selected</a>
+				</div>
             </div>
         </div>
     </section>	

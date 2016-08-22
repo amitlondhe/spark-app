@@ -53,6 +53,10 @@ p {
   background-color: #f5f5f5;
   color: white;
 }
+.bg-light-alternate {
+  background-color: #dddddd;
+  color: white;
+}
 .text-faded {
   color: rgba(255, 255, 255, 0.7);
 }
