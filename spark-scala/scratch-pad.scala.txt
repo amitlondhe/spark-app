@@ -1,0 +1,49 @@
+val userdata = sqlContext.read.json("C:/amit/yelp/data/yelp_academic_dataset_user.json")
+/*
+userdata: org.apache.spark.sql.DataFrame = [average_stars: double, compliments:struct<cool:bigint,cute:bigint,funny:bigint,hot:bigint,list:bigint,more:bigint,
+note:bigint,photos:bigint,plain:bigint,profile:bigint,writer:bigint>, 
+elite: array<bigint>, fans: bigint, friends: array<string>, name: string, 
+review_count: bigint, type: string, user_id: string, votes: struct<cool:bigint,funny:bigint,
+useful:bigint>, yelping_since: string]
+*/
+val users = userdata.select("user_id","review_count")
+users.filter($"review_count" > 50).count()
+
+reviews: org.apache.spark.sql.DataFrame = [business_id: string, date: string, review_id: string, stars: bigint, text: string, type: string, user_id: string, 
+votes: struct<cool:bigint,funny:bigint,useful:bigint>]
+
+res0: org.apache.spark.sql.Row = [5UmKMjUEUNdYWqANhGckJw,2012-08-01,Ya85v4eqdd6k9Od8HbQjyA,4,Mr Hoagie is an institution. Walking in, it does seem like a throwb
+ack to 30 years ago, old fashioned menu board, booths out of the 70s, and a large selection of food. Their speciality is the Italian Hoagie, and it is voted the
+ best in the area year after year. I usually order the burger, while the patties
+ are obviously cooked from frozen, all of the other ingredients are very fresh.
+Overall, its a good alternative to Subway, which is down the road.,review,PUFPaY9KxDAcGqfsorJp3Q,[0,0,0]]
+
+val tipsPerBusiness = tips.groupBy("business_id").count()
+val businesses = tips.select("business_id").distinct()
+val businessAndTipCount = businesses.join(tipsPerBusiness,"business_id")
+val businessAndTipCount = businesses.join(tipsPerBusiness,"business_id").orderBy(desc("count")).show()
+
+reviews.groupBy("stars").count().orderBy(desc("count")).show()
+reviews.groupBy("business_id","stars").count().orderBy(desc("count")).count() -- 250K combinations
+
+val businesses = sqlContext.read.json("C:/amit/yelp/data/yelp_academic_dataset_business.json")
+val cityState = businesses.select("city","state").distinct().orderBy("state")
+
+businesses.select("city","state").distinct().orderBy("state").coalesce(1).write.json("C:/amit/yelp/data/city-state")
+businesses.filter($"state".equalTo("PA")).distinct().show()
+businesses.filter($"state".equalTo("CA")).select("city","state").distinct().show()
+businesses.select("city","state").distinct().orderBy("state").show()
+businesses.select("city","state").distinct().orderBy("state").coalesce(1).write.json("C:/amit/yelp/data/city-state")
+
+
+businesses.select("review_count").distinct().orderBy(desc("review_count")).show()
+
+businesses.filter($"review_count" > 1000).select("business_id","city","state","review_count","stars").show()
+
+val bus = businesses.select("business_id","categories")
+bus: org.apache.spark.sql.DataFrame = [business_id: string, categories: array<string>]
+
+
+val bus = businesses.explode($"categories","category"){categories:WrappedArray[String] => categories.mkString(",")}
+val flattened = emp.explode("dept","dept1"){depts:WrappedArray[Long] => depts.mkString(",").split(",")}
+val flattened = emp.explode("dept","dept1"){depts:WrappedArray[Long] => depts.map(_+1-1)}
